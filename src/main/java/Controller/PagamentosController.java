@@ -17,8 +17,12 @@ public class PagamentosController {
         switch (opt) {
             case 1 -> processarPagamentoNaDevolucao(con);
             case 2 -> {
+                if(listarPagamentos(con).equals("")){
+                    EntradaSaida.showMessage(("Não há dados para informar"));
+                }else{
                     EntradaSaida.showMessage(listarPagamentos(con));
-                    menu(con);
+                }
+                menu(con);
             }
             case 3 -> excluirPagamento(con);
         }
@@ -145,7 +149,7 @@ public class PagamentosController {
         EmprestimosController emp = new EmprestimosController();
         
         if(emp.listarEmprestimos(con).equals("")){
-            return "Não há emprestimoss cadastrados";
+            return "";
         }
         EntradaSaida.showMessage(emp.listarEmprestimos(con));
         
@@ -154,6 +158,9 @@ public class PagamentosController {
         StringBuilder sb = new StringBuilder();
         try {
             LinkedHashSet<PagamentosBean> pagamentos = PagamentosModel.listarPagamentos(idEmprestimo, con);
+            if(pagamentos.isEmpty()){
+                return "";
+            }
             sb.append("Lista de Pagamentos:\n\n");
             for (PagamentosBean pagamento : pagamentos) {
                 sb.append(pagamento.pagamentoEmprestimo()).append("\n");
